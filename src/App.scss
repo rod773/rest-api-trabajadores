@@ -1,0 +1,23 @@
+.react-plugin {
+    display: flex;
+
+    justify-content: center;
+
+    padding: 1.5rem;
+
+    background-color: black;
+
+    button {
+        border: 0;
+
+        border-radius: 0.5rem;
+
+        padding: 1rem 0.75rem;
+
+        cursor: pointer;
+
+        &:hover {
+            background-color: lightgray;
+        }
+    }
+}
