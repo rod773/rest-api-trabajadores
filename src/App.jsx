@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 
-import ReactDOM from "react-dom";
+import "./App.scss";
 
-import { App } from "./App";
+export function App() {
+  const [counter, setCounter] = useState(0);
 
-const containers = document.querySelectorAll(".react-plugin");
+  const increment = () => setCounter(counter + 1);
 
-containers.forEach((container) => {
-  ReactDOM.render(<App />, container);
-});
+  return <button onClick={increment}>Cliked me {counter} times!</button>;
+}
