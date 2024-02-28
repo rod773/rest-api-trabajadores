@@ -32,6 +32,8 @@ function react_plugin_shortcode()
 
 add_shortcode('rest-api-trabajadores', 'react_plugin_shortcode');
 
+//=====================================
+
 include 'functions_trabajadores.php';
 
 // Función para crear la tabla de trabajadores al activar el plugin
