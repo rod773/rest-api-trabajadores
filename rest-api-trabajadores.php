@@ -1,17 +1,13 @@
 <?php
 
-require_once __DIR__ .'vendor/autoload.php';
-
-use Firebase\JWT\JWT;
-
-include "functions_trabajadores.php";
-
 /*
 Plugin Name: REST API trabajadores
 Description: Este plugin agrega un endpoint a la API REST de WordPress para manipular datos de la tabla de trabajadores.
 Version: 1.0
 Author: Rodrigo
 */
+
+include "functions_trabajadores.php";
 
 
 
