@@ -178,7 +178,7 @@ function generar_token($request)
        'id' => $userId, // key 
        'name' => $name // secret
      ]);
-    $jwt = JWT::encode($token, $key);
+    $jwt = "";
 
     wp_send_json(['token' => $jwt]);
 }
