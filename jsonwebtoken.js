@@ -44,3 +44,8 @@ var signature = CryptoJS.HmacSHA256(token, secret);
 signature = base64url(signature);
 
 var signedToken = token + "." + signature;
+
+/*
+There is plenty of libraries dealing with JWT. Creating tokens by hand is only a good idea to learn how they work. On a real project, don’t reinvent the wheel and use existing third-part tools, such as LexikJWTAuthenticationBundle for Symfony2 users or node-jsonwebtoken for Node.js developers.
+
+*/
