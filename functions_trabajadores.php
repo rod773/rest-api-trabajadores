@@ -181,11 +181,17 @@ function generar_token($request)
 
         $res = $response->body;
 
-        $token = explode(',', $res)[0];
+        $res1 = explode(',', $res)[0];
+
+        $res2 = explode('{', $res1)[1];
+
+        $res3 = explode(':', $res2);
+
+        $token = trim($res3[1], '"');
 
         // print_r($token);
 
-        wp_send_json($token);
+        wp_send_json(['token' => $token]);
     } catch (Exception $e) {
         wp_send_json(['error' => $e->getMessage()]);
     }
