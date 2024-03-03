@@ -166,6 +166,7 @@ function generar_token($request)
 {
     $email = $request->get_param('email');  // Retrieved from filtered POST data
 
+<<<<<<< HEAD
     $password = $request->get_param('password');
 
     $arr = ['alg' => 'HS256', 'typ' => 'JWT'];
@@ -253,6 +254,37 @@ function urlsafeB64Decode(string $input): string
     }
 
     return \base64_decode(\strtr($input, '-_', '+/'));
+=======
+    // open connection
+    $ch = curl_init();
+
+    $url = 'https://infodemencias.com/wp-json/jwt-auth/v1/token';
+
+    $data = [
+        'username' => 'Rodrigo',
+        'password' => '@arcadio6558929',
+    ];
+
+    try {
+        $response = Requests::post($url, [], $data);
+
+        $res = $response->body;
+
+        $res1 = explode(',', $res)[0];
+
+        $res2 = explode('{', $res1)[1];
+
+        $res3 = explode(':', $res2);
+
+        $token = trim($res3[1], '"');
+
+        // print_r($token);
+
+        wp_send_json(['token' => $token]);
+    } catch (Exception $e) {
+        wp_send_json(['error' => $e->getMessage()]);
+    }
+>>>>>>> 7ecb654ec50606d272f05c0f06e871d8e6fc5c7c
 }
 
 // Función para registrar el endpoint de la API REST
@@ -263,11 +295,14 @@ function registrar_endpoint_rest_trabajadores()
         'callback' => 'generar_token',
     ]);
 
+<<<<<<< HEAD
     register_rest_route('auth/v1', '/validate', [
         'methods' => WP_REST_Server::CREATABLE,
         'callback' => 'leer_token',
     ]);
 
+=======
+>>>>>>> 7ecb654ec50606d272f05c0f06e871d8e6fc5c7c
     register_rest_route('trabajadores/v1', '/(?P<dni>\d+)', [
         'methods' => WP_REST_Server::READABLE,
         'callback' => 'obtener_trabajador',
