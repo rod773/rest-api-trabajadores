@@ -164,9 +164,12 @@ function actualizar_jornada($request)
 
 function generar_token($request)
 {
-    $email = $request->get_param('email');  // Retrieved from filtered POST data
+    
+    $dni = $request->get_param('dni');
 
-    $password = $request->get_param('password');
+    $usuario = $request->get_param('usuario');
+
+    $email = $request->get_param('email');  
 
     $arr = ['alg' => 'HS256', 'typ' => 'JWT'];
     $arr2 = json_encode($arr);
