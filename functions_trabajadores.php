@@ -244,18 +244,18 @@ function leer_token($request)
 
 function urlsafeB64Encode(string $input): string
 {
-    return str_replace('=', '', \strtr(\base64_encode($input), '+/', '-_'));
+    return str_replace('=', '', strtr(base64_encode($input), '+/', '-_'));
 }
 
 function urlsafeB64Decode(string $input): string
 {
-    $remainder = \strlen($input) % 4;
+    $remainder = strlen($input) % 4;
     if ($remainder) {
         $padlen = 4 - $remainder;
-        $input .= \str_repeat('=', $padlen);
+        $input .= str_repeat('=', $padlen);
     }
 
-    return \base64_decode(\strtr($input, '-_', '+/'));
+    return base64_decode(strtr($input, '-_', '+/'));
 }
 
 // Función para registrar el endpoint de la API REST
