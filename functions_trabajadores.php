@@ -175,7 +175,17 @@ function generar_token($request)
     $arr2 = json_encode($arr);
     $encoded_header = urlsafeB64Encode($arr2);
 
-    $arr3 = ['email' => $email, 'password' => $password];
+    $iss = 'localhost';
+    $sub = $usuario;
+    $iat = time();
+    $exp  = time() + (60 * 60 * 24);
+
+    $arr3 = [
+        'iss' => $iss, 
+        'sub' => $sub,
+        'iat' => $iat,
+        'exp' => $exp
+    ];
     $arr33 = json_encode($arr3);
     $encoded_payload = urlsafeB64Encode($arr33);
 
