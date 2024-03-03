@@ -201,8 +201,6 @@ function generar_token($request)
 function leer_token($request)
 {
     
-    
-
     $authorization = $request->get_headers()['authorization'][0];
 
     $len = strlen($authorization);
