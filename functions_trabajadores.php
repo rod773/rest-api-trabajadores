@@ -160,27 +160,99 @@ function actualizar_jornada($request)
     }
 }
 
-// =========================endpoints============================//
+// =========================AUTH============================//
 
 function generar_token($request)
 {
-    $userId = $request->get_param('userId');
+    $email = $request->get_param('email');  // Retrieved from filtered POST data
 
-    $name = $request->get_param('name');
+    $password = $request->get_param('password');
 
-    $time = time();
-    $key = 'my_secret_key';
+    $arr = ['alg' => 'HS256', 'typ' => 'JWT'];
+    $arr2 = json_encode($arr);
+    $encoded_header = urlsafeB64Encode($arr2);
 
-    $token = array(
-    'iat' => $time, // Tiempo que inició el token
-    'exp' => $time + (60*60), // Tiempo que expirará el token (+1 hora)
-    'data' => [ // información del usuario
-       'id' => $userId, // key 
-       'name' => $name // secret
-     ]);
-    $jwt = "";
+    $arr3 = ['email' => $email, 'password' => $password];
+    $arr33 = json_encode($arr3);
+    $encoded_payload = urlsafeB64Encode($arr33);
 
-    wp_send_json(['token' => $jwt]);
+    $segments = [];
+
+    $segments[] = $encoded_header;
+
+    $segments[] = $encoded_payload;
+
+    $header_payload = implode('.', $segments);
+
+    $secret_key = '90481cd8c9b821da4a6f8a6aa72b4867b71986555819865f522111e71052e3ef';
+
+    $signature = urlsafeB64Encode(hash_hmac('sha256', $header_payload, $secret_key, true));
+
+    $segments[] = $signature;
+
+    $jwt_token = implode('.', $segments);
+
+    wp_send_json(['token' => $jwt_token]);
+}
+
+function leer_token($request)
+{
+    
+    
+
+    $authorization = $request->get_headers()['authorization'][0];
+
+    $len = strlen($authorization);
+
+    $recievedJwt = substr($authorization,7,$len);
+
+    $secret_key = '90481cd8c9b821da4a6f8a6aa72b4867b71986555819865f522111e71052e3ef';
+
+    $jwt_values = explode('.', $recievedJwt);
+
+    $recieved_signature = $jwt_values[2];
+
+    $segments = [];
+
+    $segments[] = $jwt_values[0];
+
+    $segments[] = $jwt_values[1];
+
+    $recievedHeaderAndPayload = implode('.', $segments);
+
+    $resultedsignature = urlsafeB64Encode(hash_hmac(
+        'sha256', $recievedHeaderAndPayload, $secret_key, true));
+
+
+    wp_send_json([
+        "received sig"=>$recieved_signature,
+        "resulted sig"=>$resultedsignature
+    ]);
+    
+
+    if ($resultedsignature == $recieved_signature) {
+
+        wp_send_json(["result"=>'Success']) ;
+    } else {
+        //echo 'Password no valida';
+        wp_send_json(["result:"=>'Password no valido']) ;
+    }
+}
+
+function urlsafeB64Encode(string $input): string
+{
+    return str_replace('=', '', \strtr(\base64_encode($input), '+/', '-_'));
+}
+
+function urlsafeB64Decode(string $input): string
+{
+    $remainder = \strlen($input) % 4;
+    if ($remainder) {
+        $padlen = 4 - $remainder;
+        $input .= \str_repeat('=', $padlen);
+    }
+
+    return \base64_decode(\strtr($input, '-_', '+/'));
 }
 
 // Función para registrar el endpoint de la API REST
@@ -191,6 +263,10 @@ function registrar_endpoint_rest_trabajadores()
         'callback' => 'generar_token',
     ]);
 
+    register_rest_route('auth/v1', '/validate', [
+        'methods' => WP_REST_Server::CREATABLE,
+        'callback' => 'leer_token',
+    ]);
 
     register_rest_route('trabajadores/v1', '/(?P<dni>\d+)', [
         'methods' => WP_REST_Server::READABLE,

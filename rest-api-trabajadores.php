@@ -1,40 +1,13 @@
 <?php
 
+include 'functions_trabajadores.php';
+
 /*
 Plugin Name: REST API trabajadores
 Description: Este plugin agrega un endpoint a la API REST de WordPress para manipular datos de la tabla de trabajadores.
 Version: 1.0
 Author: Rodrigo
 */
-
-function react_plugin_shortcode()
-{
-    wp_enqueue_script(
-        'rest-api-trabajadores_js',
-
-        plugin_dir_url(__FILE__).'/build/index.js',
-
-        ['wp-element'],
-
-        '0.1.0',
-
-        true
-    );
-
-    wp_enqueue_style(
-        'rest-api-trabajadores_css',
-
-        plugin_dir_url(__FILE__).'/build/index.css'
-    );
-
-    return "<div class='react-plugin'></div>";
-}
-
-add_shortcode('rest-api-trabajadores', 'react_plugin_shortcode');
-
-//=====================================
-
-include 'functions_trabajadores.php';
 
 // Función para crear la tabla de trabajadores al activar el plugin
 function crear_tabla_trabajadores()
@@ -47,7 +20,7 @@ function crear_tabla_trabajadores()
         nombre VARCHAR(255),
         apellido VARCHAR(255),
         usuario VARCHAR(255),
-        email VARCHAR(255),
+        email VARCHAR(255) UNIQUE,
         password VARCHAR(50),
         fechaini VARCHAR(50),
         fechafin VARCHAR(50),
