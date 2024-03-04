@@ -28,23 +28,23 @@ function crear_trabajador($request)
 {
     global $wpdb;
     $tabla_trabajadores = $wpdb->prefix.'trabajadores';
-    $trabajador = [
-        'dni' => $request->get_param('dni'),
-        'nombre' => $request->get_param('nombre'),
-        'apellido' => $request->get_param('apellido'),
-        'usuario' => $request->get_param('usuario'),
-        'email' => $request->get_param('email'),
-        'password' => $request->get_param('password'),
-        'fechaini' => $request->get_param('fechaini'),
-        'fechafin' => $request->get_param('fechafin'),
-    ];
+
+    $dni = $request->get_param('dni');
+    $nombre = $request->get_param('nombre');
+    $apellido = $request->get_param('apellido');
+    $usuario = $request->get_param('usuario');
+    $email = $request->get_param('email');
+    $password = $request->get_param('password');
+    $fechaini = $request->get_param('fechaini');
+    $fechafin = $request->get_param('fechafin');
+
     // Insertar el trabajador en la base de datos
 
-    if ($wpdb->insert($tabla_trabajadores, $trabajador)) {
-        // rest_ensure_response
-        // rest_request_after_callbacks
-        // rest_request_before_callbacks
+    $sql = "insert into $tabla_trabajadores(dni,nombre,apellido,usuario,email,password,fechaini,fechafin) values ('$dni','$nombre','$apellido','$usuario','$email','$password','$fechaini','$fechafin')";
 
+    var_dump($sql);
+
+    if ($wpdb->query($sql)) {
         wp_send_json(['inserted' => true]);
     } else {
         wp_send_json(['inserted' => false]);
@@ -57,18 +57,21 @@ function actualizar_trabajador($request)
     global $wpdb;
     $tabla_trabajadores = $wpdb->prefix.'trabajadores';
     $dni = $request->get_param('dni');
-    $trabajador = [
-        'dni' => $request->get_param('dni'),
-        'nombre' => $request->get_param('nombre'),
-        'apellido' => $request->get_param('apellido'),
-        'usuario' => $request->get_param('usuario'),
-        'email' => $request->get_param('email'),
-        'password' => $request->get_param('password'),
-        'fechaini' => $request->get_param('fechaini'),
-        'fechafin' => $request->get_param('fechafin'),
-    ];
 
-    if ($wpdb->update($tabla_trabajadores, $trabajador, ['dni' => $dni])) {
+    $dni = $request->get_param('dni');
+    $nombre = $request->get_param('nombre');
+    $apellido = $request->get_param('apellido');
+    $usuario = $request->get_param('usuario');
+    $email = $request->get_param('email');
+    $password = $request->get_param('password');
+    $fechaini = $request->get_param('fechaini');
+    $fechafin = $request->get_param('fechafin');
+
+    $sql = "update $tabla_trabajadores set nombre='$nombre', apellido='$apellido',
+    usuario='$usuario',email='$email',password='$password',fechaini='$fechaini',fechafin='$fechafin'
+    where dni='$dni'";
+
+    if ($wpdb->query($sql)) {
         wp_send_json(['updated' => true]);
     } else {
         wp_send_json(['updated' => false]);
@@ -164,12 +167,11 @@ function actualizar_jornada($request)
 
 function generar_token($request)
 {
-    
     $dni = $request->get_param('dni');
 
     $usuario = $request->get_param('usuario');
 
-    $email = $request->get_param('email');  
+    $email = $request->get_param('email');
 
     $arr = ['alg' => 'HS256', 'typ' => 'JWT'];
     $arr2 = json_encode($arr);
@@ -178,13 +180,13 @@ function generar_token($request)
     $iss = $_SERVER['SERVER_NAME'];
     $sub = $usuario;
     $iat = time();
-    $exp  = time() + (60 * 60 * 24);
+    $exp = time() + (60 * 60 * 24);
 
     $arr3 = [
-        'iss' => $iss, 
+        'iss' => $iss,
         'sub' => $sub,
         'iat' => $iat,
-        'exp' => $exp
+        'exp' => $exp,
     ];
     $arr33 = json_encode($arr3);
     $encoded_payload = urlsafeB64Encode($arr33);
@@ -210,12 +212,11 @@ function generar_token($request)
 
 function leer_token($request)
 {
-    
     $authorization = $request->get_headers()['authorization'][0];
 
     $len = strlen($authorization);
 
-    $recievedJwt = substr($authorization,7,$len);
+    $recievedJwt = substr($authorization, 7, $len);
 
     $secret_key = '90481cd8c9b821da4a6f8a6aa72b4867b71986555819865f522111e71052e3ef';
 
@@ -234,19 +235,16 @@ function leer_token($request)
     $resultedsignature = urlsafeB64Encode(hash_hmac(
         'sha256', $recievedHeaderAndPayload, $secret_key, true));
 
-
     wp_send_json([
-        "received sig"=>$recieved_signature,
-        "resulted sig"=>$resultedsignature
+        'received sig' => $recieved_signature,
+        'resulted sig' => $resultedsignature,
     ]);
-    
 
     if ($resultedsignature == $recieved_signature) {
-
-        wp_send_json(["result"=>'Success']) ;
+        wp_send_json(['result' => 'Success']);
     } else {
-        //echo 'Password no valida';
-        wp_send_json(["result:"=>'Password no valido']) ;
+        // echo 'Password no valida';
+        wp_send_json(['result:' => 'Password no valido']);
     }
 }
 

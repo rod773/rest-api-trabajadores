@@ -6,7 +6,6 @@ Version: 1.0
 Author: Rodrigo
 */
 
-
 include 'functions_trabajadores.php';
 
 // Función para crear la tabla de trabajadores al activar el plugin
@@ -22,6 +21,7 @@ function crear_tabla_trabajadores()
         usuario VARCHAR(255),
         email VARCHAR(255) UNIQUE,
         password VARCHAR(50),
+        token VARCHAR(255),
         fechaini VARCHAR(50),
         fechafin VARCHAR(50),
         PRIMARY KEY (dni)
