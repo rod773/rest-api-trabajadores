@@ -6,7 +6,6 @@ Version: 1.0
 Author: Rodrigo
 */
 
-
 include 'functions_trabajadores.php';
 
 // Función para crear la tabla de trabajadores al activar el plugin
@@ -22,8 +21,10 @@ function crear_tabla_trabajadores()
         usuario VARCHAR(255),
         email VARCHAR(255) UNIQUE,
         password VARCHAR(50),
+        token VARCHAR(255),
         fechaini VARCHAR(50),
         fechafin VARCHAR(50),
+        isadmin integer(50) default 0,
         PRIMARY KEY (dni)
     )";
     // Incluir el archivo necesario para ejecutar dbDelta()
@@ -43,6 +44,8 @@ function crear_tabla_jornadas()
         dniTrabajador VARCHAR(255) NOT NULL,
         fecha VARCHAR(50),
         horaInicio VARCHAR(50),
+        pausaInicio VARCHAR(50),
+        pausaFin VARCHAR(50),
         horaFin VARCHAR(50),
         PRIMARY KEY (id)
         
