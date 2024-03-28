@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: REST API trabajadores
+Plugin Name: REST API trabajadores 
 Description: Este plugin agrega un endpoint a la API REST de WordPress para manipular datos de la tabla de trabajadores.
 Version: 1.0
 Author: Rodrigo
