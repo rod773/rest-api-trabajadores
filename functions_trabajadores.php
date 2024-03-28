@@ -1,5 +1,12 @@
 <?php
 
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
+require_once(plugin_dir_path(__FILE__)."/vendor/autoload.php");
+
+
+
 // Función para obtener un trabajador por ID
 function obtener_trabajador($request)
 {
@@ -37,45 +44,33 @@ function signup_trabajador($request)
     $email = $request->get_param('email');
     $password = $request->get_param('password');
 
-    $arr = ['alg' => 'HS256', 'typ' => 'JWT'];
-    $arr2 = json_encode($arr);
-    $encoded_header = urlsafeB64Encode($arr2);
+   
 
     $iss = $_SERVER['SERVER_NAME'];
     $sub = $usuario;
     $iat = time();
     $exp = time() + (60 * 60 * 24);
 
-    $arr3 = [
+    $payload = [
         'iss' => $iss,
         'sub' => $sub,
         'iat' => $iat,
         'exp' => $exp,
     ];
-    $arr33 = json_encode($arr3);
-    $encoded_payload = urlsafeB64Encode($arr33);
+    
+    $key = '90481cd8c9b821da4a6f8a6aa72b4867b71986555819865f522111e71052e3ef';
 
-    $segments = [];
+    $jwt = JWT::encode($payload, $key, 'HS256');
 
-    $segments[] = $encoded_header;
+    $jwt_token = $jwt;
 
-    $segments[] = $encoded_payload;
-
-    $header_payload = implode('.', $segments);
-
-    $secret_key = '90481cd8c9b821da4a6f8a6aa72b4867b71986555819865f522111e71052e3ef';
-
-    $signature = urlsafeB64Encode(hash_hmac('sha256', $header_payload, $secret_key, true));
-
-    $segments[] = $signature;
-
-    $jwt_token = implode('.', $segments);
+    //print_r($jwt_token);
 
     // Insertar el trabajador en la base de datos
 
     $sql = "insert into $tabla_trabajadores(dni,nombre,apellido,usuario,email,password,token) values ('$dni','$nombre','$apellido','$usuario','$email','$password','$jwt_token')";
 
-    // var_dump($sql);
+   //  var_dump($sql);
 
     if ($wpdb->query($sql)) {
         wp_send_json([

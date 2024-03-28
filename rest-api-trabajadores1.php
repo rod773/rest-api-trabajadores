@@ -1,6 +1,7 @@
 <?php
+
 /*
-Plugin Name: REST API trabajadores 
+Plugin Name: REST API trabajadores 1
 Description: Este plugin agrega un endpoint a la API REST de WordPress para manipular datos de la tabla de trabajadores.
 Version: 1.0
 Author: Rodrigo
@@ -8,7 +9,8 @@ Author: Rodrigo
 
 include 'functions_trabajadores.php';
 
-// Función para crear la tabla de trabajadores al activar el plugin
+define('PLUGIN_PATH', plugin_dir_path(__FILE__));
+
 function crear_tabla_trabajadores()
 {
     global $wpdb;
@@ -55,11 +57,6 @@ function crear_tabla_jornadas()
     // Crear o modificar la tabla en la base de datos
     dbDelta($sql);
 }
-// Agregar la acción para crear la tabla de trabajadores al activar el plugin
-register_activation_hook(__FILE__, 'crear_tabla_trabajadores');
-register_activation_hook(__FILE__, 'crear_tabla_jornadas');
-
-// ===========================================================================
 
 function handle_preflight()
 {
@@ -74,6 +71,9 @@ function handle_preflight()
         exit;
     }
 }
+
+register_activation_hook(__FILE__, 'crear_tabla_trabajadores');
+register_activation_hook(__FILE__, 'crear_tabla_jornadas');
 
 add_action('init', 'handle_preflight');
 
